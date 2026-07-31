@@ -22,3 +22,12 @@ def health_check():
         "version": app.version,
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
+
+
+@app.get("/info")
+def info():
+    return {
+        "service_name": "issue-to-pr-test-repo",
+        "application_version": app.version,
+        "environment": "development",
+    }
