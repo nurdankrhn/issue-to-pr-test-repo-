@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from fastapi import FastAPI
 
 
@@ -18,4 +19,6 @@ def root():
 def health_check():
     return {
         "status": "healthy",
+        "version": app.version,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
     }

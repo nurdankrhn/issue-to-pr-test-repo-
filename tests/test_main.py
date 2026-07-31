@@ -1,3 +1,4 @@
+import re
 from fastapi.testclient import TestClient
 
 from app.main import app
@@ -10,6 +11,17 @@ def test_health_check():
     response = client.get("/health")
 
     assert response.status_code == 200
-    assert response.json() == {
-        "status": "healthy",
-    }
+    data = response.json()
+    
+    # Check that all required fields are present
+    assert "status" in data
+    assert "version" in data
+    assert "timestamp" in data
+    
+    # Check field values
+    assert data["status"] == "healthy"
+    assert data["version"] == "1.0.0"
+    
+    # Validate timestamp is in ISO 8601 format (UTC)
+    iso_8601_pattern = r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?\+00:00$'
+    assert re.match(iso_8601_pattern, data["timestamp"]), f"Timestamp {data['timestamp']} is not in valid ISO 8601 UTC format"
