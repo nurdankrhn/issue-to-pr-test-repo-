@@ -59,3 +59,18 @@ def test_ready():
     assert data["status"] == "ready"
     assert data["service"] == "issue-to-pr-test-repo"
     assert data["version"] == app.version
+
+
+def test_ping():
+    response = client.get("/ping")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Check that all required fields are present
+    assert "status" in data
+    assert "service" in data
+
+    # Check field values
+    assert data["status"] == "ping"
+    assert data["service"] == "issue-to-pr-test-repo"

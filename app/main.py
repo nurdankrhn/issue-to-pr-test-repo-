@@ -45,3 +45,15 @@ def ready():
         "service": "issue-to-pr-test-repo",
         "version": app.version,
     }
+
+
+@app.get("/ping")
+def ping():
+    """Ping endpoint.
+
+    Servisin ayakta olduğunu belirtmek için "ping" durumunu döner.
+    """
+    return {
+        "status": "ping",
+        "service": "issue-to-pr-test-repo",
+    }
