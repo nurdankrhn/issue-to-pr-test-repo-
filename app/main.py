@@ -31,3 +31,17 @@ def info():
         "application_version": app.version,
         "environment": "development",
     }
+
+
+@app.get("/ready")
+def ready():
+    """Readiness check endpoint.
+
+    Uygulamanın istekleri karşılamaya hazır olduğunu belirtmek için
+    servis adı ve versiyon bilgisiyle birlikte "ready" durumunu döner.
+    """
+    return {
+        "status": "ready",
+        "service": "issue-to-pr-test-repo",
+        "version": app.version,
+    }

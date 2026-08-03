@@ -42,3 +42,20 @@ def test_info():
     assert data["service_name"] == "issue-to-pr-test-repo"
     assert data["application_version"] == "1.0.0"
     assert data["environment"] == "development"
+
+
+def test_ready():
+    response = client.get("/ready")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Check that all required fields are present
+    assert "status" in data
+    assert "service" in data
+    assert "version" in data
+
+    # Check field values
+    assert data["status"] == "ready"
+    assert data["service"] == "issue-to-pr-test-repo"
+    assert data["version"] == app.version
