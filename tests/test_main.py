@@ -74,3 +74,36 @@ def test_ping():
     # Check field values
     assert data["status"] == "ping"
     assert data["service"] == "issue-to-pr-test-repo"
+
+
+def test_calculate_sum():
+    # Validates the newly added /calculate/sum endpoint for the basic
+    # positive-number case
+    response = client.get("/calculate/sum?a=7&b=5")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Check field values
+    assert data == {"a": 7, "b": 5, "result": 12}
+
+
+def test_calculate_sum_negative():
+    # Covers the negative-number scenario for the new sum endpoint
+    response = client.get("/calculate/sum?a=-3&b=8")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Check field values
+    assert data["a"] == -3
+    assert data["b"] == 8
+    assert data["result"] == 5
+
+
+def test_calculate_sum_missing_param():
+    # Verifies FastAPI's automatic 422 response when a required query
+    # parameter is omitted (here, 'b' is missing)
+    response = client.get("/calculate/sum?a=7")
+
+    assert response.status_code == 422
