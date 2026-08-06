@@ -98,12 +98,44 @@ def test_calculate_sum_negative():
     # Check field values
     assert data["a"] == -3
     assert data["b"] == 8
-    assert data["result"] == 5
+
+
+def test_calculate_multiply():
+    # Validates the newly added /calculate/multiply endpoint for the basic
+    # positive-number case
+    response = client.get("/calculate/multiply?a=7&b=5")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Check field values
+    assert data == {"a": 7, "b": 5, "result": 35}
+
+
+def test_calculate_multiply_negative():
+    # Covers the negative-number scenario for the new multiply endpoint
+    response = client.get("/calculate/multiply?a=-3&b=8")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Check field values
+    assert data["a"] == -3
+    assert data["b"] == 8
+    assert data["result"] == -24
 
 
 def test_calculate_sum_missing_param():
     # Verifies FastAPI's automatic 422 response when a required query
     # parameter is omitted (here, 'b' is missing)
     response = client.get("/calculate/sum?a=7")
+
+    assert response.status_code == 422
+
+
+def test_calculate_multiply_missing_param():
+    # Covers the missing required query parameter scenario for the new
+    # multiply endpoint; FastAPI's built-in validation should return 422
+    response = client.get("/calculate/multiply?a=7")
 
     assert response.status_code == 422
