@@ -181,3 +181,37 @@ def test_calculate_divide_missing_param():
     response = client.get("/calculate/divide?a=10")
 
     assert response.status_code == 422
+
+
+def test_calculate_subtract():
+    # Validates the newly added /calculate/subtract endpoint for the basic
+    # positive-number case
+    response = client.get("/calculate/subtract?a=10&b=4")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Check field values
+    assert data == {"a": 10, "b": 4, "result": 6, "operation": "subtract"}
+
+
+def test_calculate_subtract_negative():
+    # Covers the negative-number scenario for the new subtract endpoint
+    response = client.get("/calculate/subtract?a=3&b=8")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Check field values
+    assert data["a"] == 3
+    assert data["b"] == 8
+    assert data["result"] == -5
+    assert data["operation"] == "subtract"
+
+
+def test_calculate_subtract_missing_param():
+    # Covers the missing required query parameter scenario for the new
+    # subtract endpoint; FastAPI's built-in validation should return 422
+    response = client.get("/calculate/subtract?a=7")
+
+    assert response.status_code == 422

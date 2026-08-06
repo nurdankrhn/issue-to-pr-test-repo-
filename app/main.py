@@ -131,3 +131,25 @@ def calculate_divide(a: float, b: float):
         "result": _normalize(result),
         "operation": "divide",
     }
+
+
+@app.get("/calculate/subtract")
+def calculate_subtract(a: int, b: int):
+    """Subtract calculation endpoint.
+
+    'a' ve 'b' adında iki zorunlu integer query parametresi alır ve
+    'a' değerinden 'b' değerinin çıkarılması sonucunu, kendileriyle
+    birlikte döner.
+
+    'a' veya 'b' eksik ya da geçersiz bir tip ile gönderilirse, FastAPI'nin
+    yerleşik doğrulaması otomatik olarak 422 Unprocessable Entity yanıtı
+    döner; bu yüzden burada ekstra bir doğrulama koduna gerek yoktur.
+    """
+    # Yeni özellik için eklenen çıkarma işlemi
+    result = a - b
+    return {
+        "a": a,
+        "b": b,
+        "result": result,
+        "operation": "subtract",
+    }
