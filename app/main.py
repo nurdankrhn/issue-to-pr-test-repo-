@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 
 app = FastAPI(
@@ -96,4 +96,38 @@ def calculate_multiply(a: int, b: int):
         "a": a,
         "b": b,
         "result": result,
+    }
+
+
+@app.get("/calculate/divide")
+def calculate_divide(a: float, b: float):
+    """Divide calculation endpoint.
+
+    'a' ve 'b' adında iki zorunlu number query parametresi alır ve
+    'a' değerinin 'b' değerine bölümünü, kendileriyle birlikte döner.
+
+    'b' değeri 0 olduğunda HTTP 400 Bad Request yanıtı döner.
+
+    'a' veya 'b' eksik ya da geçersiz bir tip ile gönderilirse, FastAPI'nin
+    yerleşik doğrulaması otomatik olarak 422 Unprocessable Entity yanıtı
+    döner; bu yüzden burada ekstra bir doğrulama koduna gerek yoktur.
+    """
+    # Yeni özellik için eklenen bölme işlemi
+    if b == 0:
+        raise HTTPException(
+            status_code=400, detail="Division by zero is not allowed"
+        )
+
+    result = a / b
+
+    # Sonuçları tam sayı olarak temsil edebiliyorsak int'e çeviriyoruz,
+    # böylece örnekte olduğu gibi "5" döner, "5.0" değil.
+    def _normalize(value: float):
+        return int(value) if value.is_integer() else value
+
+    return {
+        "a": _normalize(a),
+        "b": _normalize(b),
+        "result": _normalize(result),
+        "operation": "divide",
     }

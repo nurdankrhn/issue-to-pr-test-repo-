@@ -139,3 +139,45 @@ def test_calculate_multiply_missing_param():
     response = client.get("/calculate/multiply?a=7")
 
     assert response.status_code == 422
+
+
+def test_calculate_divide():
+    # Validates the newly added /calculate/divide endpoint for the basic
+    # positive-number case
+    response = client.get("/calculate/divide?a=10&b=2")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Check field values
+    assert data == {"a": 10, "b": 2, "result": 5, "operation": "divide"}
+
+
+def test_calculate_divide_negative():
+    # Covers the negative-number scenario for the new divide endpoint
+    response = client.get("/calculate/divide?a=-9&b=3")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    # Check field values
+    assert data["a"] == -9
+    assert data["b"] == 3
+    assert data["result"] == -3
+    assert data["operation"] == "divide"
+
+
+def test_calculate_divide_by_zero():
+    # Verifies that dividing by zero returns HTTP 400 as required
+    response = client.get("/calculate/divide?a=10&b=0")
+
+    assert response.status_code == 400
+    assert response.json() == {"detail": "Division by zero is not allowed"}
+
+
+def test_calculate_divide_missing_param():
+    # Covers the missing required query parameter scenario for the new
+    # divide endpoint; FastAPI's built-in validation should return 422
+    response = client.get("/calculate/divide?a=10")
+
+    assert response.status_code == 422
